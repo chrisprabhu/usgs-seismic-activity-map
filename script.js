@@ -31,18 +31,29 @@ function colorDecider(magnitude) {
 // Fetch the JSON and parse it
 let url = 'https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson'
 fetch(url)
-
 // Parse the response object into a JSON
 .then((response) => response.json())
-
-
 .then(
-    
+
     function(data) 
         {
+            function onEachFeature(feature, layer) {
+                layer.bindPopup(`This earthquake had a magnitude of ${feature.properties.mag} and occured ${feature.properties.place}`);
+            }
+            L.geoJson(data, {
+                onEachFeature: onEachFeature,
+                pointToLayer: function (feature, latlng) {
+                    return L.circle(latlng, {
+                        radius: feature.properties.mag * 100500,
+                        color: colorDecider(feature.properties.mag),
+                        fillOpacity: .5,
+                        stroke: false
+                    });
+                }
 
-            // Run a loop to output the circles
-            for (let i = 0; i < data.features.length; i++)
+            } ).addTo(myMap)
+         // Run a loop to output the circles
+          /*   for (let i = 0; i < data.features.length; i++)
                 {
                     // Pull the data needed and set them to variables
                     let coords = data.features[i].geometry.coordinates.slice(0,2)
@@ -64,16 +75,47 @@ fetch(url)
 
                     }).addTo(myMap)
                     .bindPopup(`This earthquake had a magnitude of ${magnitude} and occured ${place}`);
-                }
+                } */
         });
+
+let plate_boundaries_url = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
+fetch(plate_boundaries_url)
+.then((response) => response.json())
+.then(
+    function(data)
+    {
+      
+        let plateBoundaries = L.geoJson(data, /* {
+            style: mapStyle
+        } */).addTo(myMap)
+
+        let overlays = {
+            "Plate Boundaries" : plateBoundaries
+        };
+
+        L.control.layers(null, overlays).addTo(myMap)
+    }
+);
+
+
+
+
+
+
+    
+
+/*  
+
+d3.json(plate_boundaries_url, function(data){
+    L.geoJson(data).addTo(myMap)
+});
+
 
 let overlayMaps = {
     "bike" : 
 }
 
-    
-
-/*        function getColor(d) {
+function getColor(d) {
             return d > 1000 ? '#800026' :
                    d > 500  ? '#BD0026' :
                    d > 200  ? '#E31A1C' :
