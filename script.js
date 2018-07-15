@@ -44,7 +44,7 @@ fetch(url)
                 onEachFeature: onEachFeature,
                 pointToLayer: function (feature, latlng) {
                     return L.circle(latlng, {
-                        radius: feature.properties.mag * 100500,
+                        radius: feature.properties.mag * 100000,
                         color: colorDecider(feature.properties.mag),
                         fillOpacity: .5,
                         stroke: false
@@ -52,30 +52,6 @@ fetch(url)
                 }
 
             } ).addTo(myMap)
-         // Run a loop to output the circles
-          /*   for (let i = 0; i < data.features.length; i++)
-                {
-                    // Pull the data needed and set them to variables
-                    let coords = data.features[i].geometry.coordinates.slice(0,2)
-                    let magnitude = data.features[i].properties.mag
-                    let circleColor = colorDecider(magnitude)
-                    let place = data.features[i].properties.place
-                    
-
-                    // console.log(circleColor)
-                    // console.log(coords)
-
-                    // Create the circles
-                    L.circle(coords, 
-                    {
-                        radius: (magnitude * 50000),
-                        color: circleColor,
-                        fillOpacity: .5,
-                        stroke: false
-
-                    }).addTo(myMap)
-                    .bindPopup(`This earthquake had a magnitude of ${magnitude} and occured ${place}`);
-                } */
         });
 
 let plate_boundaries_url = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
